@@ -1,10 +1,16 @@
 import { writable } from 'svelte/store';
 import Peer from 'peerjs';
 
+const ROOM_PREFIX = 'nyalur-';
+
+// Characters that are easy to read/say aloud (no I/O/0/1 confusion)
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
 function createPeerManager() {
   const { subscribe, set, update } = writable({
     peer: null,
     peerId: null,
+    roomCode: null,
     status: 'disconnected',
     connections: [],
     error: null,
@@ -33,33 +39,76 @@ function createPeerManager() {
     return name;
   }
 
+  function setDeviceName(name) {
+    if (typeof window !== 'undefined' && name) {
+      const trimmed = name.trim().substring(0, 20);
+      localStorage.setItem('nyalur-device-name', trimmed);
+      update(s => ({ ...s, deviceName: trimmed }));
+    }
+  }
+
+  function generateRoomCode() {
+    let code = '';
+    for (let i = 0; i < 4; i++) {
+      code += CODE_CHARS.charAt(Math.floor(Math.random() * CODE_CHARS.length));
+    }
+    return code;
+  }
+
+  const peerConfig = {
+    debug: 0,
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' }
+      ]
+    }
+  };
+
+  /**
+   * Initialize as SENDER (random peer ID)
+   */
   function init() {
     return new Promise((resolve, reject) => {
-      if (peerInstance) {
-        peerInstance.destroy();
-        peerInstance = null;
-      }
-
+      _cleanup();
       const deviceName = getDeviceName();
-      update(s => ({ ...s, status: 'connecting', error: null, deviceName }));
+      update(s => ({ ...s, status: 'connecting', error: null, deviceName, roomCode: null }));
 
-      peerInstance = new Peer({
-        debug: 0,
-        config: {
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' }
-          ]
-        }
-      });
+      peerInstance = new Peer(peerConfig);
+      _bindEvents(peerInstance, resolve, reject);
+    });
+  }
+
+  /**
+   * Initialize as RECEIVER with a short room code
+   * Peer ID = 'nyalur-XXXX' where XXXX is the room code
+   */
+  function initAsReceiver(retries = 3) {
+    return new Promise((resolve, reject) => {
+      _cleanup();
+      const deviceName = getDeviceName();
+      const roomCode = generateRoomCode();
+      const peerId = ROOM_PREFIX + roomCode;
+
+      update(s => ({ ...s, status: 'connecting', error: null, deviceName, roomCode }));
+
+      peerInstance = new Peer(peerId, peerConfig);
 
       peerInstance.on('open', (id) => {
-        update(s => ({ ...s, peer: peerInstance, peerId: id, status: 'connected' }));
-        resolve(id);
+        update(s => ({ ...s, peer: peerInstance, peerId: id, roomCode, status: 'connected' }));
+        resolve({ peerId: id, roomCode });
       });
 
       peerInstance.on('error', (err) => {
+        // If room code is taken, retry with a new one
+        if (err.type === 'unavailable-id' && retries > 0) {
+          console.log('Room code taken, retrying...');
+          peerInstance.destroy();
+          peerInstance = null;
+          initAsReceiver(retries - 1).then(resolve).catch(reject);
+          return;
+        }
         console.error('PeerJS error:', err);
         update(s => ({ ...s, status: 'error', error: err.message || String(err) }));
         reject(err);
@@ -81,6 +130,7 @@ function createPeerManager() {
         });
       });
 
+      // Timeout
       setTimeout(() => {
         update(s => {
           if (s.status === 'connecting') {
@@ -93,6 +143,18 @@ function createPeerManager() {
     });
   }
 
+  /**
+   * Connect to a receiver by room code (4 chars)
+   */
+  function connectToRoom(roomCode) {
+    const code = roomCode.toUpperCase().trim();
+    const remotePeerId = ROOM_PREFIX + code;
+    return connectTo(remotePeerId);
+  }
+
+  /**
+   * Connect to a peer by full peer ID
+   */
   function connectTo(remotePeerId) {
     if (!peerInstance) throw new Error('Peer belum diinisialisasi');
 
@@ -103,7 +165,7 @@ function createPeerManager() {
 
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error('Timeout: tidak bisa terhubung ke penerima'));
+        reject(new Error('Tidak ditemukan. Pastikan kode room benar dan penerima sudah siap.'));
       }, 15000);
 
       conn.on('open', () => {
@@ -114,9 +176,55 @@ function createPeerManager() {
 
       conn.on('error', (err) => {
         clearTimeout(timeout);
-        reject(err);
+        reject(new Error('Koneksi gagal: ' + (err.message || err)));
       });
     });
+  }
+
+  function _bindEvents(peer, resolve, reject) {
+    peer.on('open', (id) => {
+      update(s => ({ ...s, peer: peer, peerId: id, status: 'connected' }));
+      resolve(id);
+    });
+
+    peer.on('error', (err) => {
+      console.error('PeerJS error:', err);
+      update(s => ({ ...s, status: 'error', error: err.message || String(err) }));
+      reject(err);
+    });
+
+    peer.on('disconnected', () => {
+      update(s => ({ ...s, status: 'disconnected' }));
+      if (peerInstance && !peerInstance.destroyed) {
+        setTimeout(() => {
+          try { peerInstance.reconnect(); } catch (e) { /* ignore */ }
+        }, 3000);
+      }
+    });
+
+    peer.on('connection', (conn) => {
+      conn.on('open', () => {
+        update(s => ({ ...s, connections: [...s.connections, conn] }));
+        if (incomingCallback) incomingCallback(conn);
+      });
+    });
+
+    setTimeout(() => {
+      update(s => {
+        if (s.status === 'connecting') {
+          reject(new Error('Timeout: tidak bisa terhubung ke server'));
+          return { ...s, status: 'error', error: 'Timeout koneksi' };
+        }
+        return s;
+      });
+    }, 20000);
+  }
+
+  function _cleanup() {
+    if (peerInstance) {
+      peerInstance.destroy();
+      peerInstance = null;
+    }
   }
 
   function onIncomingConnection(callback) {
@@ -125,13 +233,11 @@ function createPeerManager() {
 
   function destroy() {
     incomingCallback = null;
-    if (peerInstance) {
-      peerInstance.destroy();
-      peerInstance = null;
-    }
+    _cleanup();
     set({
       peer: null,
       peerId: null,
+      roomCode: null,
       status: 'disconnected',
       connections: [],
       error: null,
@@ -139,7 +245,11 @@ function createPeerManager() {
     });
   }
 
-  return { subscribe, init, connectTo, onIncomingConnection, destroy, getDeviceName };
+  return {
+    subscribe, init, initAsReceiver, connectTo, connectToRoom,
+    onIncomingConnection, destroy, getDeviceName, setDeviceName,
+    generateRoomCode
+  };
 }
 
 export const peerManager = createPeerManager();
