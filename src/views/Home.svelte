@@ -7,8 +7,12 @@
 
   let history = [];
   let loading = true;
+  let deviceName = '';
+  let editingName = false;
+  let nameInput = '';
 
   onMount(async () => {
+    deviceName = localStorage.getItem('nyalur-device-name') || '';
     try {
       history = await getTransfers(10);
     } catch (e) {
@@ -16,6 +20,25 @@
     }
     loading = false;
   });
+
+  function startEditName() {
+    nameInput = deviceName;
+    editingName = true;
+  }
+
+  function saveName() {
+    const trimmed = nameInput.trim().substring(0, 20);
+    if (trimmed) {
+      deviceName = trimmed;
+      localStorage.setItem('nyalur-device-name', trimmed);
+    }
+    editingName = false;
+  }
+
+  function handleNameKey(e) {
+    if (e.key === 'Enter') saveName();
+    if (e.key === 'Escape') editingName = false;
+  }
 </script>
 
 <div class="flex flex-col items-center min-h-screen px-4 py-8">
@@ -27,8 +50,37 @@
     <p class="text-nyalur-muted text-sm mt-2 tracking-wide">Salurkan file, langsung sampai.</p>
   </div>
 
+  <!-- Device Name -->
+  <div class="mt-4 mb-2">
+    {#if editingName}
+      <div class="flex items-center gap-2">
+        <input
+          type="text"
+          bind:value={nameInput}
+          on:keydown={handleNameKey}
+          maxlength="20"
+          class="bg-nyalur-surface border border-nyalur-border rounded-lg px-3 py-1.5 text-sm text-center
+                 text-nyalur-text focus:outline-none focus:border-nyalur-green/50 w-40 font-mono"
+          autofocus
+        />
+        <button on:click={saveName} class="text-nyalur-green text-sm font-medium">OK</button>
+      </div>
+    {:else}
+      <button on:click={startEditName}
+        class="text-nyalur-muted/60 text-xs flex items-center gap-1.5 hover:text-nyalur-muted transition-colors">
+        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+        {deviceName || 'Perangkat'}
+        <svg class="w-3 h-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+        </svg>
+      </button>
+    {/if}
+  </div>
+
   <!-- Main Buttons -->
-  <div class="flex gap-4 md:gap-6 mt-12 mb-12 w-full max-w-sm justify-center">
+  <div class="flex gap-4 md:gap-6 mt-10 mb-12 w-full max-w-sm justify-center">
     <!-- KIRIM -->
     <button
       on:click={() => dispatch('navigate', 'send')}
@@ -100,6 +152,6 @@
 
   <!-- Footer -->
   <div class="mt-auto pt-10 pb-4 text-center">
-    <p class="text-nyalur-muted/40 text-xs">Nyalur v0.1.0 — Transfer file P2P tanpa iklan</p>
+    <p class="text-nyalur-muted/40 text-xs">Nyalur v0.2.0 — Transfer file P2P tanpa iklan</p>
   </div>
 </div>
