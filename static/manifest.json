@@ -12,6 +12,7 @@
   "orientation": "any",
   "lang": "id-ID",
   "dir": "ltr",
+  "prefer_related_applications": false,
   "categories": ["utilities", "productivity"],
   "icons": [
     {
