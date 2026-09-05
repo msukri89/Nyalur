@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nyalur-v0.5.0';
+const CACHE_NAME = 'nyalur-v0.6.0';
 const BASE = '/Nyalur/';
 const STATIC_ASSETS = [
   BASE,
@@ -28,6 +28,15 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
   if (request.url.includes('peerjs') || request.url.includes('0.peerjs.com')) return;
+
+  // Always fetch the manifest from the network first so Chrome sees the
+  // current install metadata instead of a stale cached manifest.
+  if (new URL(request.url).pathname === BASE + 'manifest.json') {
+    event.respondWith(
+      fetch(request, { cache: 'no-store' }).catch(() => caches.match(BASE + 'manifest.json'))
+    );
+    return;
+  }
 
   if (request.mode === 'navigate') {
     event.respondWith(
