@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nyalur-v0.4.1';
+const CACHE_NAME = 'nyalur-v0.5.0';
 const BASE = '/Nyalur/';
 const STATIC_ASSETS = [
   BASE,
