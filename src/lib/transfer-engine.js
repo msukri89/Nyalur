@@ -1,5 +1,5 @@
-const CHUNK_SIZE = 128 * 1024; // 128KB per chunk
-const YIELD_EVERY = 4; // Keep burst budget at ~512KB like the proven v1 baseline
+const CHUNK_SIZE = 256 * 1024; // 256KB per chunk
+const YIELD_EVERY = 2; // Keep burst budget at ~512KB
 
 /**
  * Mengirim file melalui koneksi PeerJS DataConnection.
