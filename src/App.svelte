@@ -38,6 +38,16 @@
     }
   }
 
+  function handleBeforeInstallPrompt(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    pwaStatus.beforeInstallPrompt = 'DITERIMA ✓';
+    const dismissed = localStorage.getItem('nyalur-install-dismissed');
+    if (!dismissed || Date.now() - parseInt(dismissed) > 7 * 86400000) {
+      showInstallBanner = true;
+    }
+  }
+
   async function installPWA() {
     if (deferredPrompt) {
       deferredPrompt.prompt();
@@ -103,23 +113,19 @@
   onMount(() => {
     window.addEventListener('hashchange', handleHashChange);
     handleHashChange();
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      pwaStatus.beforeInstallPrompt = 'DITERIMA ✓';
-      const dismissed = localStorage.getItem('nyalur-install-dismissed');
-      if (!dismissed || Date.now() - parseInt(dismissed) > 7 * 86400000) {
-        showInstallBanner = true;
-      }
-    });
-
     runPwaDiagnostics();
   });
 
   onDestroy(() => {
-    if (typeof window !== 'undefined') window.removeEventListener('hashchange', handleHashChange);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    }
   });
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }
 </script>
 
 <main class="nv-min-h-screen nv-bg-nyalur-bg">
