@@ -68,3 +68,6 @@ src/
 ## 📜 License
 
 MIT
+
+## Styling
+The UI uses plain Vanilla CSS. Tailwind CSS, PostCSS, and Tailwind configuration are not required.
