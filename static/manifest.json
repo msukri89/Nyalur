@@ -1,11 +1,8 @@
 {
   "name": "Nyalur",
   "short_name": "Nyalur",
-  "description": "Transfer file P2P langsung antar perangkat — cepat, privat, tanpa upload ke server.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "index.html",
   "display": "standalone",
-  "orientation": "any",
   "background_color": "#1B1718",
   "theme_color": "#1B1718",
   "icons": [
