@@ -2,6 +2,18 @@ const CHUNK_SIZE = 512 * 1024; // 512KB per chunk
 const YIELD_EVERY = 1; // Yield after each chunk; burst budget remains ~512KB
 
 /**
+ * Meminta izin notifikasi jika browser mendukungnya.
+ * Tidak mempengaruhi jalur transfer file.
+ */
+export function requestNotificationPermission() {
+  if (typeof Notification === 'undefined') return Promise.resolve('denied');
+  if (Notification.permission === 'granted' || Notification.permission === 'denied') {
+    return Promise.resolve(Notification.permission);
+  }
+  return Notification.requestPermission();
+}
+
+/**
  * Mengirim file melalui koneksi PeerJS DataConnection.
  * @param {DataConnection} conn - Koneksi PeerJS
  * @param {File[]} files - Array of File objects
