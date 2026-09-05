@@ -80,101 +80,101 @@
   function reset() { state = 'waiting'; offer = null; receiver = null; receivedFiles = []; transferResult = null; errorMessage = ''; progress = { fileIndex: 0, fileName: '', fileProgress: 0, totalProgress: 0, totalReceived: 0, totalSize: 0, speed: 0, elapsed: 0 }; peerManager.onIncomingConnection(handleIncomingConnection); }
 </script>
 
-<div class="min-h-screen flex flex-col px-4 py-6 max-w-lg mx-auto">
-  <div class="flex items-center gap-3 mb-6">
-    <button on:click={() => dispatch('back')} class="w-10 h-10 rounded-xl bg-nyalur-surface flex items-center justify-center hover:bg-nyalur-border transition-colors active:scale-95">
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+<div class="nv-min-h-screen nv-flex nv-flex-col nv-px-4 nv-py-6 nv-max-w-lg nv-mx-auto">
+  <div class="nv-flex nv-items-center nv-gap-3 nv-mb-6">
+    <button on:click={() => dispatch('back')} class="nv-w-10 nv-h-10 nv-rounded-xl nv-bg-nyalur-surface nv-flex nv-items-center nv-justify-center nv-hover-bg-nyalur-border nv-transition-colors nv-active-scale-95">
+      <svg class="nv-w-5 nv-h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
     </button>
-    <h1 class="text-xl font-bold text-nyalur-orange">TERIMA FILE</h1>
-    {#if peerState?.status === 'connected'}<span class="ml-auto text-xs text-nyalur-orange/60 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-nyalur-orange"></span>Siap</span>{/if}
+    <h1 class="nv-text-xl nv-font-bold nv-text-nyalur-orange">TERIMA FILE</h1>
+    {#if peerState?.status === 'connected'}<span class="nv-ml-auto nv-text-xs nv-text-nyalur-orange-60 nv-flex nv-items-center nv-gap-1"><span class="nv-w-1-5 nv-h-1-5 nv-rounded-full nv-bg-nyalur-orange"></span>Siap</span>{/if}
   </div>
 
-  <div class="flex justify-center mb-4">
+  <div class="nv-flex nv-justify-center nv-mb-4">
     {#if editingName}
-      <div class="flex items-center gap-2">
-        <input type="text" bind:value={nameInput} bind:this={nameInputEl} on:keydown={handleNameKey} on:blur={saveName} maxlength="20" class="bg-nyalur-surface border border-nyalur-border rounded-lg px-3 py-1.5 text-sm text-center text-nyalur-text focus:outline-none focus:border-nyalur-orange/50 w-44 font-mono" />
-        <button on:click={saveName} class="text-nyalur-orange text-sm font-medium">OK</button>
+      <div class="nv-flex nv-items-center nv-gap-2">
+        <input type="text" bind:value={nameInput} bind:this={nameInputEl} on:keydown={handleNameKey} on:blur={saveName} maxlength="20" class="nv-bg-nyalur-surface nv-border nv-border-nyalur-border nv-rounded-lg nv-px-3 nv-py-1-5 nv-text-sm nv-text-center nv-text-nyalur-text nv-focus-outline-none nv-focus-border-nyalur-orange-50 nv-w-44 nv-font-mono" />
+        <button on:click={saveName} class="nv-text-nyalur-orange nv-text-sm nv-font-medium">OK</button>
       </div>
     {:else}
-      <button on:click={startEditName} class="text-nyalur-muted/60 text-xs flex items-center gap-1.5 hover:text-nyalur-muted transition-colors">
-        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+      <button on:click={startEditName} class="nv-text-nyalur-muted-60 nv-text-xs nv-flex nv-items-center nv-gap-1-5 nv-hover-text-nyalur-muted nv-transition-colors">
+        <svg class="nv-w-3 nv-h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
         {deviceName || 'Perangkat'}
-        <svg class="w-3 h-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+        <svg class="nv-w-3 nv-h-3 nv-opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
       </button>
     {/if}
   </div>
 
-  <div class="flex-1 flex flex-col items-center">
+  <div class="nv-flex-1 nv-flex nv-flex-col nv-items-center">
     {#if state === 'waiting'}
       {#if peerState?.status === 'connecting'}
-        <div class="flex-1 flex flex-col items-center justify-center"><div class="w-[220px] h-[220px] bg-nyalur-surface rounded-2xl animate-pulse mb-6"></div><p class="text-nyalur-muted text-sm">Menghubungkan ke server...</p></div>
+        <div class="nv-flex-1 nv-flex nv-flex-col nv-items-center nv-justify-center"><div class="nv-w--220px nv-h--220px nv-bg-nyalur-surface nv-rounded-2xl nv-animate-pulse nv-mb-6"></div><p class="nv-text-nyalur-muted nv-text-sm">Menghubungkan ke server...</p></div>
       {:else if peerState?.status === 'connected'}
-        <div class="text-center w-full">
-          <p class="text-xs text-nyalur-muted uppercase tracking-[0.25em] mb-3">KODE ROOM</p>
-          <div class="mb-3"><span class="text-5xl md:text-6xl font-black tracking-[0.4em] text-nyalur-orange font-mono select-all">{spacedCode}</span></div>
-          <p class="text-sm text-nyalur-muted/70 mb-5">Berikan kode ini ke pengirim</p>
-          <button on:click={copyRoomCode} class="inline-flex items-center gap-2 bg-nyalur-surface border border-nyalur-border rounded-xl px-4 py-2.5 hover:border-nyalur-orange/50 transition-all active:scale-95 mb-6">
-            {#if copied}<svg class="w-4 h-4 text-nyalur-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span class="text-sm text-nyalur-green font-medium">Tersalin!</span>
-            {:else}<svg class="w-4 h-4 text-nyalur-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg><span class="text-sm text-nyalur-muted font-medium">Salin Kode</span>{/if}
+        <div class="nv-text-center nv-w-full">
+          <p class="nv-text-xs nv-text-nyalur-muted nv-uppercase nv-tracking--0-25em nv-mb-3">KODE ROOM</p>
+          <div class="nv-mb-3"><span class="nv-text-5xl nv-md-text-6xl nv-font-black nv-tracking--0-4em nv-text-nyalur-orange nv-font-mono nv-select-all">{spacedCode}</span></div>
+          <p class="nv-text-sm nv-text-nyalur-muted-70 nv-mb-5">Berikan kode ini ke pengirim</p>
+          <button on:click={copyRoomCode} class="nv-inline-flex nv-items-center nv-gap-2 nv-bg-nyalur-surface nv-border nv-border-nyalur-border nv-rounded-xl nv-px-4 nv-py-2-5 nv-hover-border-nyalur-orange-50 nv-transition-all nv-active-scale-95 nv-mb-6">
+            {#if copied}<svg class="nv-w-4 nv-h-4 nv-text-nyalur-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span class="nv-text-sm nv-text-nyalur-green nv-font-medium">Tersalin!</span>
+            {:else}<svg class="nv-w-4 nv-h-4 nv-text-nyalur-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg><span class="nv-text-sm nv-text-nyalur-muted nv-font-medium">Salin Kode</span>{/if}
           </button>
-          {#if qrDataUrl}<div class="flex justify-center mb-6"><div class="bg-nyalur-surface rounded-2xl p-3 inline-block border border-nyalur-border"><img src={qrDataUrl} alt="QR Code room" class="w-[196px] h-[196px] rounded-lg" /></div></div>{/if}
-          <div class="flex items-center gap-2 justify-center mb-2"><span class="w-2 h-2 rounded-full bg-nyalur-orange animate-pulse"></span><p class="text-sm text-nyalur-muted">Menunggu koneksi...</p></div>
+          {#if qrDataUrl}<div class="nv-flex nv-justify-center nv-mb-6"><div class="nv-bg-nyalur-surface nv-rounded-2xl nv-p-3 nv-inline-block nv-border nv-border-nyalur-border"><img src={qrDataUrl} alt="QR Code room" class="nv-w--196px nv-h--196px nv-rounded-lg" /></div></div>{/if}
+          <div class="nv-flex nv-items-center nv-gap-2 nv-justify-center nv-mb-2"><span class="nv-w-2 nv-h-2 nv-rounded-full nv-bg-nyalur-orange nv-animate-pulse"></span><p class="nv-text-sm nv-text-nyalur-muted">Menunggu koneksi...</p></div>
         </div>
       {:else if peerState?.status === 'error'}
-        <div class="flex-1 flex flex-col items-center justify-center text-center">
-          <div class="w-20 h-20 rounded-full bg-nyalur-error/15 flex items-center justify-center mx-auto mb-6"><svg class="w-10 h-10 text-nyalur-error" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg></div>
-          <p class="text-nyalur-error text-sm mb-4">{peerState.error}</p>
-          <button on:click={() => dispatch('back')} class="px-6 py-2.5 bg-nyalur-surface border border-nyalur-border rounded-xl hover:bg-nyalur-border transition-colors text-sm active:scale-95">Kembali</button>
+        <div class="nv-flex-1 nv-flex nv-flex-col nv-items-center nv-justify-center nv-text-center">
+          <div class="nv-w-20 nv-h-20 nv-rounded-full nv-bg-nyalur-error-15 nv-flex nv-items-center nv-justify-center nv-mx-auto nv-mb-6"><svg class="nv-w-10 nv-h-10 nv-text-nyalur-error" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg></div>
+          <p class="nv-text-nyalur-error nv-text-sm nv-mb-4">{peerState.error}</p>
+          <button on:click={() => dispatch('back')} class="nv-px-6 nv-py-2-5 nv-bg-nyalur-surface nv-border nv-border-nyalur-border nv-rounded-xl nv-hover-bg-nyalur-border nv-transition-colors nv-text-sm nv-active-scale-95">Kembali</button>
         </div>
       {/if}
 
     {:else if state === 'incoming'}
-      <div class="w-full text-center">
-        <div class="w-16 h-16 rounded-full bg-nyalur-orange/15 flex items-center justify-center mx-auto mb-4 animate-pulse-orange"><svg class="w-8 h-8 text-nyalur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg></div>
-        <h2 class="text-lg font-bold mb-1">Transfer Masuk</h2>
-        <p class="text-sm text-nyalur-muted mb-4">dari <span class="text-nyalur-orange font-medium">{offer?.deviceName || 'Pengirim'}</span></p>
-        <div class="bg-nyalur-surface rounded-xl p-4 mb-6 text-left">
-          {#if offer?.files}{#each offer.files as file}<div class="flex items-center gap-2 py-1.5"><svg class="w-4 h-4 text-nyalur-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg><span class="text-sm truncate flex-1">{file.name}</span><span class="text-xs text-nyalur-muted flex-shrink-0">{formatFileSize(file.size)}</span></div>{/each}{/if}
-          <div class="border-t border-nyalur-border mt-2 pt-2 text-right"><span class="text-xs text-nyalur-muted font-medium">Total: {formatFileSize(offer?.totalSize || 0)}</span></div>
+      <div class="nv-w-full nv-text-center">
+        <div class="nv-w-16 nv-h-16 nv-rounded-full nv-bg-nyalur-orange-15 nv-flex nv-items-center nv-justify-center nv-mx-auto nv-mb-4 nv-animate-pulse-orange"><svg class="nv-w-8 nv-h-8 nv-text-nyalur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg></div>
+        <h2 class="nv-text-lg nv-font-bold nv-mb-1">Transfer Masuk</h2>
+        <p class="nv-text-sm nv-text-nyalur-muted nv-mb-4">dari <span class="nv-text-nyalur-orange nv-font-medium">{offer?.deviceName || 'Pengirim'}</span></p>
+        <div class="nv-bg-nyalur-surface nv-rounded-xl nv-p-4 nv-mb-6 nv-text-left">
+          {#if offer?.files}{#each offer.files as file}<div class="nv-flex nv-items-center nv-gap-2 nv-py-1-5"><svg class="nv-w-4 nv-h-4 nv-text-nyalur-muted nv-flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg><span class="nv-text-sm nv-truncate nv-flex-1">{file.name}</span><span class="nv-text-xs nv-text-nyalur-muted nv-flex-shrink-0">{formatFileSize(file.size)}</span></div>{/each}{/if}
+          <div class="nv-border-t nv-border-nyalur-border nv-mt-2 nv-pt-2 nv-text-right"><span class="nv-text-xs nv-text-nyalur-muted nv-font-medium">Total: {formatFileSize(offer?.totalSize || 0)}</span></div>
         </div>
-        <div class="flex gap-3 justify-center">
-          <button on:click={rejectTransfer} class="flex-1 max-w-[140px] py-3 bg-nyalur-surface border border-nyalur-border rounded-xl hover:bg-nyalur-border transition-colors text-sm active:scale-95">Tolak</button>
-          <button on:click={acceptTransfer} class="flex-1 max-w-[140px] py-3 bg-nyalur-orange text-nyalur-bg font-bold rounded-xl hover:bg-nyalur-orange/90 transition-colors text-sm active:scale-95">Terima</button>
+        <div class="nv-flex nv-gap-3 nv-justify-center">
+          <button on:click={rejectTransfer} class="nv-flex-1 nv-max-w--140px nv-py-3 nv-bg-nyalur-surface nv-border nv-border-nyalur-border nv-rounded-xl nv-hover-bg-nyalur-border nv-transition-colors nv-text-sm nv-active-scale-95">Tolak</button>
+          <button on:click={acceptTransfer} class="nv-flex-1 nv-max-w--140px nv-py-3 nv-bg-nyalur-orange nv-text-nyalur-bg nv-font-bold nv-rounded-xl nv-hover-bg-nyalur-orange-90 nv-transition-colors nv-text-sm nv-active-scale-95">Terima</button>
         </div>
       </div>
 
     {:else if state === 'receiving'}
-      <div class="w-full flex-1 flex flex-col items-center justify-center text-center">
-        <div class="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 relative">
-          <svg class="absolute w-24 h-24 -rotate-90" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#334155" stroke-width="4" /><circle cx="48" cy="48" r="42" fill="none" stroke="#FF6B00" stroke-width="4" stroke-dasharray="263.9" stroke-dashoffset="{263.9 * (1 - progress.totalProgress)}" stroke-linecap="round" class="transition-all duration-500" /></svg>
-          <span class="text-nyalur-orange font-bold text-xl">{Math.round(progress.totalProgress * 100)}%</span>
+      <div class="nv-w-full nv-flex-1 nv-flex nv-flex-col nv-items-center nv-justify-center nv-text-center">
+        <div class="nv-w-24 nv-h-24 nv-rounded-full nv-flex nv-items-center nv-justify-center nv-mx-auto nv-mb-6 nv-relative">
+          <svg class="nv-absolute nv-w-24 nv-h-24 -rotate-90" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#334155" stroke-width="4" /><circle cx="48" cy="48" r="42" fill="none" stroke="#FF6B00" stroke-width="4" stroke-dasharray="263.9" stroke-dashoffset="{263.9 * (1 - progress.totalProgress)}" stroke-linecap="round" class="nv-transition-all nv-duration-500" /></svg>
+          <span class="nv-text-nyalur-orange nv-font-bold nv-text-xl">{Math.round(progress.totalProgress * 100)}%</span>
         </div>
-        <p class="text-sm text-nyalur-text mb-1 truncate w-full px-8">{progress.fileName}</p>
-        <div class="w-full bg-nyalur-surface rounded-full h-1.5 mb-3"><div class="bg-nyalur-orange h-1.5 rounded-full transition-all duration-500" style="width: {progress.totalProgress * 100}%"></div></div>
-        <div class="flex justify-between text-xs text-nyalur-muted w-full"><span>{formatFileSize(progress.totalReceived)} / {formatFileSize(progress.totalSize)}</span><span>{formatSpeed(progress.speed)}</span></div>
-        {#if progress.speed > 0}<p class="text-xs text-nyalur-muted/60 mt-2">~{formatTime((progress.totalSize - progress.totalReceived) / progress.speed)} lagi</p>{/if}
+        <p class="nv-text-sm nv-text-nyalur-text nv-mb-1 nv-truncate nv-w-full nv-px-8">{progress.fileName}</p>
+        <div class="nv-w-full nv-bg-nyalur-surface nv-rounded-full nv-h-1-5 nv-mb-3"><div class="nv-bg-nyalur-orange nv-h-1-5 nv-rounded-full nv-transition-all nv-duration-500" style="width: {progress.totalProgress * 100}%"></div></div>
+        <div class="nv-flex nv-justify-between nv-text-xs nv-text-nyalur-muted nv-w-full"><span>{formatFileSize(progress.totalReceived)} / {formatFileSize(progress.totalSize)}</span><span>{formatSpeed(progress.speed)}</span></div>
+        {#if progress.speed > 0}<p class="nv-text-xs nv-text-nyalur-muted-60 nv-mt-2">~{formatTime((progress.totalSize - progress.totalReceived) / progress.speed)} lagi</p>{/if}
       </div>
 
     {:else if state === 'complete'}
-      <div class="w-full flex-1 flex flex-col items-center justify-center text-center">
-        <div class="w-20 h-20 rounded-full bg-nyalur-orange/15 flex items-center justify-center mx-auto mb-6"><svg class="w-10 h-10 text-nyalur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></div>
-        <h2 class="text-2xl font-bold text-nyalur-orange mb-2">Diterima!</h2>
+      <div class="nv-w-full nv-flex-1 nv-flex nv-flex-col nv-items-center nv-justify-center nv-text-center">
+        <div class="nv-w-20 nv-h-20 nv-rounded-full nv-bg-nyalur-orange-15 nv-flex nv-items-center nv-justify-center nv-mx-auto nv-mb-6"><svg class="nv-w-10 nv-h-10 nv-text-nyalur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></div>
+        <h2 class="nv-text-2xl nv-font-bold nv-text-nyalur-orange nv-mb-2">Diterima!</h2>
         {#if transferResult}
-          <p class="text-sm text-nyalur-muted mb-1">{transferResult.files.length} file ({formatFileSize(transferResult.totalSize)}) dalam {formatTime(transferResult.duration / 1000)}</p>
-          <p class="text-xs text-nyalur-muted/50 mb-4">Kecepatan rata-rata: {formatSpeed(transferResult.avgSpeed || 0)}</p>
+          <p class="nv-text-sm nv-text-nyalur-muted nv-mb-1">{transferResult.files.length} file ({formatFileSize(transferResult.totalSize)}) dalam {formatTime(transferResult.duration / 1000)}</p>
+          <p class="nv-text-xs nv-text-nyalur-muted-50 nv-mb-4">Kecepatan rata-rata: {formatSpeed(transferResult.avgSpeed || 0)}</p>
         {/if}
-        <div class="bg-nyalur-surface rounded-xl p-4 mb-6 text-left w-full">
-          {#each receivedFiles as file}<div class="flex items-center gap-2 py-2"><svg class="w-4 h-4 text-nyalur-green flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span class="text-sm truncate flex-1">{file.name}</span><button on:click={() => handleDownload(file)} class="text-xs text-nyalur-orange hover:underline flex-shrink-0 font-medium">Unduh</button></div>{/each}
+        <div class="nv-bg-nyalur-surface nv-rounded-xl nv-p-4 nv-mb-6 nv-text-left nv-w-full">
+          {#each receivedFiles as file}<div class="nv-flex nv-items-center nv-gap-2 nv-py-2"><svg class="nv-w-4 nv-h-4 nv-text-nyalur-green nv-flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span class="nv-text-sm nv-truncate nv-flex-1">{file.name}</span><button on:click={() => handleDownload(file)} class="nv-text-xs nv-text-nyalur-orange nv-hover-underline nv-flex-shrink-0 nv-font-medium">Unduh</button></div>{/each}
         </div>
-        <button on:click={reset} class="px-8 py-3 bg-nyalur-surface border border-nyalur-border rounded-xl hover:bg-nyalur-border transition-colors text-sm active:scale-95">Terima Lagi</button>
+        <button on:click={reset} class="nv-px-8 nv-py-3 nv-bg-nyalur-surface nv-border nv-border-nyalur-border nv-rounded-xl nv-hover-bg-nyalur-border nv-transition-colors nv-text-sm nv-active-scale-95">Terima Lagi</button>
       </div>
 
     {:else if state === 'error'}
-      <div class="w-full flex-1 flex flex-col items-center justify-center text-center">
-        <div class="w-20 h-20 rounded-full bg-nyalur-error/15 flex items-center justify-center mx-auto mb-6"><svg class="w-10 h-10 text-nyalur-error" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg></div>
-        <h2 class="text-xl font-bold text-nyalur-error mb-2">Error</h2>
-        <p class="text-sm text-nyalur-muted mb-6 px-4">{errorMessage}</p>
-        <button on:click={() => { reset(); dispatch('back'); }} class="px-8 py-3 bg-nyalur-surface border border-nyalur-border rounded-xl hover:bg-nyalur-border transition-colors text-sm active:scale-95">Kembali</button>
+      <div class="nv-w-full nv-flex-1 nv-flex nv-flex-col nv-items-center nv-justify-center nv-text-center">
+        <div class="nv-w-20 nv-h-20 nv-rounded-full nv-bg-nyalur-error-15 nv-flex nv-items-center nv-justify-center nv-mx-auto nv-mb-6"><svg class="nv-w-10 nv-h-10 nv-text-nyalur-error" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg></div>
+        <h2 class="nv-text-xl nv-font-bold nv-text-nyalur-error nv-mb-2">Error</h2>
+        <p class="nv-text-sm nv-text-nyalur-muted nv-mb-6 nv-px-4">{errorMessage}</p>
+        <button on:click={() => { reset(); dispatch('back'); }} class="nv-px-8 nv-py-3 nv-bg-nyalur-surface nv-border nv-border-nyalur-border nv-rounded-xl nv-hover-bg-nyalur-border nv-transition-colors nv-text-sm nv-active-scale-95">Kembali</button>
       </div>
     {/if}
   </div>

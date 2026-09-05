@@ -24,89 +24,89 @@
   async function handleClearHistory() { await clearTransfers(); history = []; showClearConfirm = false; }
 </script>
 
-<div class="flex flex-col items-center min-h-screen px-4 py-8">
-  <div class="mt-6 mb-2 text-center animate-fade-in">
-    <h1 class="text-5xl md:text-6xl font-black tracking-tight">
-      <span class="text-nyalur-green">NYA</span><span class="text-nyalur-orange">LUR</span>
+<div class="nv-flex nv-flex-col nv-items-center nv-min-h-screen nv-px-4 nv-py-8">
+  <div class="nv-mt-6 nv-mb-2 nv-text-center nv-animate-fade-in">
+    <h1 class="nv-text-5xl nv-md-text-6xl nv-font-black nv-tracking-tight">
+      <span class="nv-text-nyalur-green">NYA</span><span class="nv-text-nyalur-orange">LUR</span>
     </h1>
-    <p class="text-nyalur-muted text-sm mt-2 tracking-wide">Salurkan file, langsung sampai.</p>
+    <p class="nv-text-nyalur-muted nv-text-sm nv-mt-2 nv-tracking-wide">Salurkan file, langsung sampai.</p>
   </div>
 
-  <div class="mt-3 mb-2">
+  <div class="nv-mt-3 nv-mb-2">
     {#if editingName}
-      <div class="flex items-center gap-2 animate-fade-in">
-        <input type="text" bind:value={nameInput} on:keydown={handleNameKey} maxlength="20" class="bg-nyalur-surface border border-nyalur-border rounded-lg px-3 py-1.5 text-sm text-center text-nyalur-text focus:outline-none focus:border-nyalur-green/50 w-44 font-mono" autofocus />
-        <button on:click={saveName} class="text-nyalur-green text-sm font-medium">OK</button>
+      <div class="nv-flex nv-items-center nv-gap-2 nv-animate-fade-in">
+        <input type="text" bind:value={nameInput} on:keydown={handleNameKey} maxlength="20" class="nv-bg-nyalur-surface nv-border nv-border-nyalur-border nv-rounded-lg nv-px-3 nv-py-1-5 nv-text-sm nv-text-center nv-text-nyalur-text nv-focus-outline-none nv-focus-border-nyalur-green-50 nv-w-44 nv-font-mono" autofocus />
+        <button on:click={saveName} class="nv-text-nyalur-green nv-text-sm nv-font-medium">OK</button>
       </div>
     {:else}
-      <button on:click={startEditName} class="text-nyalur-muted/60 text-xs flex items-center gap-1.5 hover:text-nyalur-muted transition-colors">
-        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+      <button on:click={startEditName} class="nv-text-nyalur-muted-60 nv-text-xs nv-flex nv-items-center nv-gap-1-5 nv-hover-text-nyalur-muted nv-transition-colors">
+        <svg class="nv-w-3 nv-h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
         {deviceName || 'Perangkat'}
-        <svg class="w-3 h-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+        <svg class="nv-w-3 nv-h-3 nv-opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
       </button>
     {/if}
   </div>
 
-  <div class="flex gap-4 md:gap-6 mt-8 mb-10 w-full max-w-sm justify-center">
-    <button on:click={() => dispatch('navigate', 'send')} class="flex-1 max-w-[170px] aspect-square rounded-2xl bg-nyalur-surface border-2 border-nyalur-green/30 hover:border-nyalur-green hover:bg-nyalur-green/10 active:scale-95 transition-all duration-300 flex flex-col items-center justify-center gap-3 group animate-pulse-green">
-      <svg class="w-12 h-12 text-nyalur-green group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" /></svg>
-      <span class="text-nyalur-green font-bold text-lg">KIRIM</span>
+  <div class="nv-flex nv-gap-4 nv-md-gap-6 nv-mt-8 nv-mb-10 nv-w-full nv-max-w-sm nv-justify-center">
+    <button on:click={() => dispatch('navigate', 'send')} class="nv-flex-1 nv-max-w--170px nv-aspect-square nv-rounded-2xl nv-bg-nyalur-surface nv-border-2 nv-border-nyalur-green-30 nv-hover-border-nyalur-green nv-hover-bg-nyalur-green-10 nv-active-scale-95 nv-transition-all nv-duration-300 nv-flex nv-flex-col nv-items-center nv-justify-center nv-gap-3 nv-group nv-animate-pulse-green">
+      <svg class="nv-w-12 nv-h-12 nv-text-nyalur-green nv-group-hover-scale-110 nv-transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" /></svg>
+      <span class="nv-text-nyalur-green nv-font-bold nv-text-lg">KIRIM</span>
     </button>
-    <button on:click={() => dispatch('navigate', 'receive')} class="flex-1 max-w-[170px] aspect-square rounded-2xl bg-nyalur-surface border-2 border-nyalur-orange/30 hover:border-nyalur-orange hover:bg-nyalur-orange/10 active:scale-95 transition-all duration-300 flex flex-col items-center justify-center gap-3 group animate-pulse-orange">
-      <svg class="w-12 h-12 text-nyalur-orange group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg>
-      <span class="text-nyalur-orange font-bold text-lg">TERIMA</span>
+    <button on:click={() => dispatch('navigate', 'receive')} class="nv-flex-1 nv-max-w--170px nv-aspect-square nv-rounded-2xl nv-bg-nyalur-surface nv-border-2 nv-border-nyalur-orange-30 nv-hover-border-nyalur-orange nv-hover-bg-nyalur-orange-10 nv-active-scale-95 nv-transition-all nv-duration-300 nv-flex nv-flex-col nv-items-center nv-justify-center nv-gap-3 nv-group nv-animate-pulse-orange">
+      <svg class="nv-w-12 nv-h-12 nv-text-nyalur-orange nv-group-hover-scale-110 nv-transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg>
+      <span class="nv-text-nyalur-orange nv-font-bold nv-text-lg">TERIMA</span>
     </button>
   </div>
 
-  <div class="w-full max-w-sm">
+  <div class="nv-w-full nv-max-w-sm">
     {#if !loading && history.length > 0}
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-nyalur-muted text-xs uppercase tracking-widest flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <div class="nv-flex nv-items-center nv-justify-between nv-mb-3">
+        <h2 class="nv-text-nyalur-muted nv-text-xs nv-uppercase nv-tracking-widest nv-flex nv-items-center nv-gap-2">
+          <svg class="nv-w-4 nv-h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
           Riwayat ({history.length})
         </h2>
         {#if showClearConfirm}
-          <div class="flex items-center gap-2 animate-fade-in">
-            <span class="text-xs text-nyalur-muted">Hapus semua?</span>
-            <button on:click={handleClearHistory} class="text-xs text-nyalur-error font-medium">Ya</button>
-            <button on:click={() => showClearConfirm = false} class="text-xs text-nyalur-muted">Batal</button>
+          <div class="nv-flex nv-items-center nv-gap-2 nv-animate-fade-in">
+            <span class="nv-text-xs nv-text-nyalur-muted">Hapus semua?</span>
+            <button on:click={handleClearHistory} class="nv-text-xs nv-text-nyalur-error nv-font-medium">Ya</button>
+            <button on:click={() => showClearConfirm = false} class="nv-text-xs nv-text-nyalur-muted">Batal</button>
           </div>
         {:else}
-          <button on:click={() => showClearConfirm = true} class="text-xs text-nyalur-muted/40 hover:text-nyalur-muted transition-colors">Hapus</button>
+          <button on:click={() => showClearConfirm = true} class="nv-text-xs nv-text-nyalur-muted-40 nv-hover-text-nyalur-muted nv-transition-colors">Hapus</button>
         {/if}
       </div>
-      <div class="space-y-2">
+      <div class="nv-space-y-2">
         {#each history as record}
-          <div class="bg-nyalur-surface rounded-xl p-3 flex items-center gap-3">
-            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 {record.direction === 'sent' ? 'bg-nyalur-green/15' : 'bg-nyalur-orange/15'}">
+          <div class="nv-bg-nyalur-surface nv-rounded-xl nv-p-3 nv-flex nv-items-center nv-gap-3">
+            <div class="nv-w-8 nv-h-8 nv-rounded-lg nv-flex nv-items-center nv-justify-center nv-flex-shrink-0 {record.direction === 'sent' ? 'nv-bg-nyalur-green-15' : 'nv-bg-nyalur-orange-15'}">
               {#if record.direction === 'sent'}
-                <svg class="w-4 h-4 text-nyalur-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" /></svg>
+                <svg class="nv-w-4 nv-h-4 nv-text-nyalur-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 11l5-5m0 0l5 5m-5-5v12" /></svg>
               {:else}
-                <svg class="w-4 h-4 text-nyalur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg>
+                <svg class="nv-w-4 nv-h-4 nv-text-nyalur-orange" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 13l-5 5m0 0l-5-5m5 5V6" /></svg>
               {/if}
             </div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm text-nyalur-text truncate">{record.files ? record.files.map(f => f.name).join(', ') : 'File'}</p>
-              <p class="text-xs text-nyalur-muted">{record.direction === 'sent' ? '→' : '←'} {record.peerName || '—'} · {formatFileSize(record.totalSize)} · {formatDate(record.timestamp)}</p>
+            <div class="nv-flex-1 nv-min-w-0">
+              <p class="nv-text-sm nv-text-nyalur-text nv-truncate">{record.files ? record.files.map(f => f.name).join(', ') : 'File'}</p>
+              <p class="nv-text-xs nv-text-nyalur-muted">{record.direction === 'sent' ? '→' : '←'} {record.peerName || '—'} · {formatFileSize(record.totalSize)} · {formatDate(record.timestamp)}</p>
             </div>
-            <span class="text-xs px-2 py-0.5 rounded-full flex-shrink-0 {record.status === 'completed' ? 'bg-nyalur-green/15 text-nyalur-green' : 'bg-nyalur-error/15 text-nyalur-error'}">{record.status === 'completed' ? '✓' : '✗'}</span>
+            <span class="nv-text-xs nv-px-2 nv-py-0-5 nv-rounded-full nv-flex-shrink-0 {record.status === 'completed' ? 'nv-bg-nyalur-green-15 nv-text-nyalur-green' : 'nv-bg-nyalur-error-15 nv-text-nyalur-error'}">{record.status === 'completed' ? '✓' : '✗'}</span>
           </div>
         {/each}
       </div>
     {:else if !loading}
-      <div class="text-center py-8 animate-fade-in">
-        <div class="w-16 h-16 rounded-2xl bg-nyalur-surface flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-nyalur-muted/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+      <div class="nv-text-center nv-py-8 nv-animate-fade-in">
+        <div class="nv-w-16 nv-h-16 nv-rounded-2xl nv-bg-nyalur-surface nv-flex nv-items-center nv-justify-center nv-mx-auto nv-mb-4">
+          <svg class="nv-w-8 nv-h-8 nv-text-nyalur-muted-30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
         </div>
-        <p class="text-nyalur-muted/40 text-sm">Belum ada transfer</p>
-        <p class="text-nyalur-muted/25 text-xs mt-1">Mulai kirim atau terima file!</p>
+        <p class="nv-text-nyalur-muted-40 nv-text-sm">Belum ada transfer</p>
+        <p class="nv-text-nyalur-muted-25 nv-text-xs nv-mt-1">Mulai kirim atau terima file!</p>
       </div>
     {/if}
   </div>
 
-  <div class="mt-auto pt-8 pb-4 text-center">
-    <p class="text-nyalur-muted/30 text-xs">Nyalur v0.4.0 · P2P · Tanpa iklan · Tanpa kuota</p>
+  <div class="nv-mt-auto nv-pt-8 nv-pb-4 nv-text-center">
+    <p class="nv-text-nyalur-muted-30 nv-text-xs">Nyalur v0.4.0 · P2P · Tanpa iklan · Tanpa kuota</p>
   </div>
 </div>

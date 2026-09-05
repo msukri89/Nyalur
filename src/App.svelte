@@ -5,12 +5,12 @@
   import Receive from './views/Receive.svelte';
 
   let currentView = 'home';
-  let viewClass = 'animate-fade-in';
+  let viewClass = 'nv-animate-fade-in';
   let deferredPrompt = null;
   let showInstallBanner = false;
 
   function navigate(view) {
-    viewClass = view === 'home' ? 'animate-slide-back' : 'animate-slide-in';
+    viewClass = view === 'home' ? 'nv-animate-slide-back' : 'nv-animate-slide-in';
     currentView = view;
     window.location.hash = view === 'home' ? '' : view;
   }
@@ -19,10 +19,10 @@
     const hash = window.location.hash.slice(1);
     if (hash === 'send' || hash === 'receive') {
       currentView = hash;
-      viewClass = 'animate-slide-in';
+      viewClass = 'nv-animate-slide-in';
     } else {
       currentView = 'home';
-      viewClass = 'animate-fade-in';
+      viewClass = 'nv-animate-fade-in';
     }
   }
 
@@ -58,21 +58,21 @@
   });
 </script>
 
-<main class="min-h-screen bg-nyalur-bg">
+<main class="nv-min-h-screen nv-bg-nyalur-bg">
   {#if showInstallBanner}
-    <div class="install-banner fixed bottom-0 left-0 right-0 z-50 p-4 flex items-center gap-3 animate-fade-in safe-bottom">
-      <div class="w-10 h-10 rounded-xl bg-nyalur-green/15 flex items-center justify-center flex-shrink-0">
-        <svg class="w-5 h-5 text-nyalur-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <div class="install-banner nv-fixed nv-bottom-0 nv-left-0 nv-right-0 nv-z-50 nv-p-4 nv-flex nv-items-center nv-gap-3 nv-animate-fade-in safe-bottom">
+      <div class="nv-w-10 nv-h-10 nv-rounded-xl nv-bg-nyalur-green-15 nv-flex nv-items-center nv-justify-center nv-flex-shrink-0">
+        <svg class="nv-w-5 nv-h-5 nv-text-nyalur-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
         </svg>
       </div>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm text-nyalur-text font-medium">Install Nyalur</p>
-        <p class="text-xs text-nyalur-muted">Akses lebih cepat dari home screen</p>
+      <div class="nv-flex-1 nv-min-w-0">
+        <p class="nv-text-sm nv-text-nyalur-text nv-font-medium">Install Nyalur</p>
+        <p class="nv-text-xs nv-text-nyalur-muted">Akses lebih cepat dari home screen</p>
       </div>
-      <button on:click={installPWA} class="px-4 py-2 bg-nyalur-green text-nyalur-bg text-xs font-bold rounded-lg active:scale-95 flex-shrink-0">Install</button>
-      <button on:click={dismissInstall} class="text-nyalur-muted p-1 flex-shrink-0">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      <button on:click={installPWA} class="nv-px-4 nv-py-2 nv-bg-nyalur-green nv-text-nyalur-bg nv-text-xs nv-font-bold nv-rounded-lg nv-active-scale-95 nv-flex-shrink-0">Install</button>
+      <button on:click={dismissInstall} class="nv-text-nyalur-muted nv-p-1 nv-flex-shrink-0">
+        <svg class="nv-w-4 nv-h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
     </div>
   {/if}
