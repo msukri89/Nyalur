@@ -9,6 +9,18 @@
   let deferredPrompt = null;
   let showInstallBanner = false;
 
+  let pwaDebug = false;
+  let pwaStatus = {
+    beforeInstallPrompt: 'belum terdeteksi',
+    serviceWorker: 'memeriksa…',
+    controller: 'memeriksa…',
+    manifest: 'memeriksa…',
+    icon192: 'memeriksa…',
+    icon512: 'memeriksa…',
+    standalone: 'tidak',
+    online: 'ya'
+  };
+
   function navigate(view) {
     viewClass = view === 'home' ? 'nv-animate-slide-back' : 'nv-animate-slide-in';
     currentView = view;
@@ -40,17 +52,69 @@
     localStorage.setItem('nyalur-install-dismissed', Date.now().toString());
   }
 
+  async function checkPwaResource(url, label) {
+    try {
+      const response = await fetch(url, { cache: 'no-store' });
+      const type = response.headers.get('content-type') || '(tanpa content-type)';
+      const text = label === 'manifest' ? await response.text() : '';
+      if (!response.ok) return `GAGAL ${response.status}`;
+      if (label === 'manifest') {
+        try {
+          const data = JSON.parse(text);
+          const icons = Array.isArray(data.icons) ? data.icons.length : 0;
+          return `OK ${response.status} · ${type} · ${icons} ikon`;
+        } catch {
+          return `GAGAL · JSON tidak valid · ${type}`;
+        }
+      }
+      return `OK ${response.status} · ${type}`;
+    } catch (error) {
+      return `GAGAL · ${error?.message || 'fetch error'}`;
+    }
+  }
+
+  async function runPwaDiagnostics() {
+    pwaDebug = new URLSearchParams(window.location.search).get('debug') === 'pwa';
+    if (!pwaDebug) return;
+
+    pwaStatus.online = navigator.onLine ? 'ya' : 'tidak';
+    pwaStatus.standalone = window.matchMedia('(display-mode: standalone)').matches ? 'ya' : 'tidak';
+
+    const manifestLink = document.querySelector('link[rel="manifest"]');
+    const manifestUrl = manifestLink?.href || '/Nyalur/manifest.json';
+
+    pwaStatus.manifest = await checkPwaResource(manifestUrl, 'manifest');
+    pwaStatus.icon192 = await checkPwaResource('/Nyalur/icon-192.png', 'icon');
+    pwaStatus.icon512 = await checkPwaResource('/Nyalur/icon-512.png', 'icon');
+
+    if ('serviceWorker' in navigator) {
+      try {
+        const registration = await navigator.serviceWorker.getRegistration('/Nyalur/');
+        pwaStatus.serviceWorker = registration?.active ? 'AKTIF' : registration ? 'terdaftar, belum aktif' : 'TIDAK TERDAFTAR';
+        pwaStatus.controller = navigator.serviceWorker.controller ? 'AKTIF / halaman dikontrol SW' : 'TIDAK mengontrol halaman';
+      } catch (error) {
+        pwaStatus.serviceWorker = `GAGAL · ${error?.message || 'error'}`;
+      }
+    } else {
+      pwaStatus.serviceWorker = 'API tidak tersedia';
+    }
+  }
+
   onMount(() => {
     window.addEventListener('hashchange', handleHashChange);
     handleHashChange();
+
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
+      pwaStatus.beforeInstallPrompt = 'DITERIMA ✓';
       const dismissed = localStorage.getItem('nyalur-install-dismissed');
       if (!dismissed || Date.now() - parseInt(dismissed) > 7 * 86400000) {
         showInstallBanner = true;
       }
     });
+
+    runPwaDiagnostics();
   });
 
   onDestroy(() => {
@@ -59,6 +123,21 @@
 </script>
 
 <main class="nv-min-h-screen nv-bg-nyalur-bg">
+  {#if pwaDebug}
+    <section style="margin:16px;padding:16px;border:1px solid #555;border-radius:12px;background:#111;color:#fff;font-family:monospace;font-size:12px;line-height:1.7;position:relative;z-index:9999;">
+      <div style="font-size:16px;font-weight:700;margin-bottom:8px;">NYALUR PWA DIAGNOSTIC</div>
+      <div>beforeinstallprompt: {pwaStatus.beforeInstallPrompt}</div>
+      <div>Service Worker: {pwaStatus.serviceWorker}</div>
+      <div>SW controller: {pwaStatus.controller}</div>
+      <div>Manifest: {pwaStatus.manifest}</div>
+      <div>Icon 192: {pwaStatus.icon192}</div>
+      <div>Icon 512: {pwaStatus.icon512}</div>
+      <div>Standalone: {pwaStatus.standalone}</div>
+      <div>Online: {pwaStatus.online}</div>
+      <div style="margin-top:8px;color:#aaa;">Jika beforeinstallprompt tetap “belum terdeteksi”, Chrome tidak menganggap situs memenuhi installability saat ini.</div>
+    </section>
+  {/if}
+
   {#if showInstallBanner}
     <div class="install-banner nv-fixed nv-bottom-0 nv-left-0 nv-right-0 nv-z-50 nv-p-4 nv-flex nv-items-center nv-gap-3 nv-animate-fade-in safe-bottom">
       <div class="nv-w-10 nv-h-10 nv-rounded-xl nv-bg-nyalur-green-15 nv-flex nv-items-center nv-justify-center nv-flex-shrink-0">
