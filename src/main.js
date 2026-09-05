@@ -9,9 +9,7 @@ const app = new App({
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const reg = await navigator.serviceWorker.register('/Nyalur/sw.js', {
-        scope: '/Nyalur/'
-      });
+      const reg = await navigator.serviceWorker.register('./sw.js');
       console.log('SW registered:', reg.scope);
     } catch (err) {
       console.log('SW registration failed:', err);
