@@ -5,6 +5,7 @@
   import { addTransfer } from '../lib/history-db.js';
   import { formatFileSize, formatSpeed, formatTime } from '../lib/utils.js';
   import QRCode from 'qrcode';
+  import JSZip from 'jszip';
 
   const dispatch = createEventDispatcher();
 
@@ -20,6 +21,9 @@
   let editingName = false;
   let nameInput = '';
   let nameInputEl;
+  let isZipping = false;
+  let zipProgress = 0;
+  let zipError = '';
 
   let progress = {
     fileIndex: 0, fileName: '', fileProgress: 0, totalProgress: 0,
@@ -73,7 +77,60 @@
     }
   }
 
+
   function handleDownload(file) { downloadFile(file.blob, file.name); }
+
+  async function downloadAllFiles() {
+    if (!receivedFiles.length || isZipping) return;
+    isZipping = true;
+    zipProgress = 0;
+    zipError = '';
+
+    try {
+      const zip = new JSZip();
+      const usedNames = new Set();
+
+      receivedFiles.forEach((file, index) => {
+        const originalName = (file.name || `file-${index + 1}`)
+          .replace(/[\\/:*?"<>|]/g, '_')
+          .trim() || `file-${index + 1}`;
+        const dot = originalName.lastIndexOf('.');
+        const hasExtension = dot > 0;
+        const baseName = hasExtension ? originalName.slice(0, dot) : originalName;
+        const extension = hasExtension ? originalName.slice(dot) : '';
+        let safeName = originalName;
+        let suffix = 2;
+
+        while (usedNames.has(safeName.toLowerCase())) {
+          safeName = `${baseName} (${suffix++})${extension}`;
+        }
+        usedNames.add(safeName.toLowerCase());
+        zip.file(safeName, file.blob);
+      });
+
+      const zipBlob = await zip.generateAsync(
+        { type: 'blob', compression: 'STORE' },
+        metadata => { zipProgress = Math.round(metadata.percent); }
+      );
+
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      link.href = url;
+      link.download = `Nyalur-File-Diterima-${timestamp}.zip`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 15000);
+    } catch (error) {
+      console.error('ZIP creation failed:', error);
+      zipError = 'Gagal membuat ZIP. Coba unduh file satu per satu.';
+    } finally {
+      isZipping = false;
+    }
+  }
+
   async function startEditName() { nameInput = deviceName; editingName = true; await tick(); if (nameInputEl) nameInputEl.focus(); }
   function saveName() { const trimmed = nameInput.trim().substring(0, 20); if (trimmed) { deviceName = trimmed; localStorage.setItem('nyalur-device-name', trimmed); peerManager.setDeviceName(trimmed); } editingName = false; }
   function handleNameKey(e) { if (e.key === 'Enter') saveName(); if (e.key === 'Escape') editingName = false; }
@@ -162,6 +219,12 @@
         {#if transferResult}
           <p class="nv-text-sm nv-text-nyalur-muted nv-mb-1">{transferResult.files.length} file ({formatFileSize(transferResult.totalSize)}) dalam {formatTime(transferResult.duration / 1000)}</p>
           <p class="nv-text-xs nv-text-nyalur-muted-50 nv-mb-4">Kecepatan rata-rata: {formatSpeed(transferResult.avgSpeed || 0)}</p>
+        {/if}
+        {#if receivedFiles.length > 0}
+          <button on:click={downloadAllFiles} disabled={isZipping} class="nv-w-full nv-mb-3 nv-py-3 nv-bg-nyalur-orange nv-text-nyalur-bg nv-font-bold nv-rounded-xl nv-hover-bg-nyalur-orange-90 nv-transition-colors nv-text-sm nv-active-scale-95 nv-disabled-opacity-60">
+            {#if isZipping}Menyiapkan ZIP... {zipProgress}%{:else}Unduh Semua ({receivedFiles.length} File) · ZIP{/if}
+          </button>
+          {#if zipError}<p class="nv-text-xs nv-text-nyalur-error nv-mb-3">{zipError}</p>{/if}
         {/if}
         <div class="nv-bg-nyalur-surface nv-rounded-xl nv-p-4 nv-mb-6 nv-text-left nv-w-full">
           {#each receivedFiles as file}<div class="nv-flex nv-items-center nv-gap-2 nv-py-2"><svg class="nv-w-4 nv-h-4 nv-text-nyalur-green nv-flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg><span class="nv-text-sm nv-truncate nv-flex-1">{file.name}</span><button on:click={() => handleDownload(file)} class="nv-text-xs nv-text-nyalur-orange nv-hover-underline nv-flex-shrink-0 nv-font-medium">Unduh</button></div>{/each}
